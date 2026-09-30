@@ -75,7 +75,7 @@ const cfg={apiKey:"AIzaSyBd36jTJ1Z-SrhyXk_jXOcVBjPvVFGfpek",authDomain:"couple-b
 const app=initializeApp(cfg),auth=getAuth(app),db=getDatabase(app);
 const ROOT="colorClashRooms";
 const $=id=>document.getElementById(id);
-let uid=null,roomCode="",meta=null,players={},gameState=null,myHand=[],unsubs=[],pendingWildCard=null,starting=false,refilling=false;
+let uid=null,roomCode="",meta=null,players={},gameState=null,myHand=[],unsubs=[],pendingWildCard=null,starting=false,refilling=false,actionBusy=false;
 let netReady=false;
 const savedName=localStorage.getItem("cc_name")||"";$("nameInput").value=savedName;
 
@@ -191,13 +191,14 @@ function renderActions(){
  $("forcedDrawBtn").style.display=mine&&gameState.pendingDraw>0?"block":"none";$("forcedDrawBtn").textContent="اسحب "+gameState.pendingDraw+" عقوبة";
  $("passBtn").style.display=mine&&gameState.pendingDraw===0&&gameState.canPass?"block":"none";
  const mp=me();$("unoBtn").style.display=myHand.length===1&&mp&&!mp.unoCalled?"block":"none";
- $("drawPileBtn").disabled=!mine||gameState.pendingDraw>0||gameState.canPass;
+ $("drawPileBtn").disabled=actionBusy||!mine||gameState.pendingDraw>0||gameState.canPass;
 }
 function requestPlay(c){if(c.color==="wild"){pendingWildCard=c;$("colorOverlay").classList.add("on")}else playCard(c,c.color)}
 document.querySelectorAll("[data-color]").forEach(b=>b.addEventListener("click",()=>{if(!pendingWildCard)return;$("colorOverlay").classList.remove("on");const c=pendingWildCard;pendingWildCard=null;playCard(c,b.dataset.color)}));
 
 async function playCard(c,chosenColor){
- if(gameState.turnUid!==uid||gameState.pendingDraw>0||!eligible(c))return;
+ if(actionBusy||gameState.turnUid!==uid||gameState.pendingDraw>0||!eligible(c))return;
+ actionBusy=true;
  try{
   const before=myHand.length,newCount=Math.max(0,before-1);let dir=gameState.direction||1,steps=1,pending=0;
   if(c.value==="reverse"){dir*=-1;if(seatPlayers().length===2)steps=2}
@@ -211,6 +212,7 @@ async function playCard(c,chosenColor){
   await update(ref(db,base()+"/state"),{turnUid:nxt,direction:dir,topCard:c,activeColor:chosenColor,pendingDraw:pending,canPass:false,drawnCardId:"",winnerUid:newCount===0?uid:"",seq:(gameState.seq||0)+1,message:msg});
   if(navigator.vibrate)navigator.vibrate(35);
  }catch(e){console.error(e);toast("تعذر لعب الورقة")}
+ finally{actionBusy=false;renderActions()}
 }
 async function takeCardFromPile(){
  const s=await get(ref(db,base()+"/state"));const st=s.val();let idx=String(st.drawIndex||"0");if(Number(idx)>=Number(st.pileCount||0)){await update(ref(db,base()+"/state"),{needRefill:true,message:"نفدت الرزمة، جارٍ إعادة تجهيزها…"});throw new Error("REFILL")}
@@ -219,22 +221,24 @@ async function takeCardFromPile(){
  if(!tx.committed)return takeCardFromPile();return card;
 }
 async function drawNormal(){
- if(gameState.turnUid!==uid||gameState.pendingDraw>0||gameState.canPass)return;
+ if(actionBusy||gameState.turnUid!==uid||gameState.pendingDraw>0||gameState.canPass)return;
+ actionBusy=true;renderActions();
  try{
   const card=await takeCardFromPile();await set(ref(db,base()+"/hands/"+uid+"/"+card.id),card);const n=(me()?.handCount||myHand.length)+1;await update(ref(db,base()+"/players/"+uid),{handCount:n,unoCalled:false});await update(ref(db,base()+"/state"),{canPass:true,drawnCardId:card.id,message:(me()?.name||"اللاعب")+" سحب ورقة"});toast(eligible(card)?"يمكنك لعب الورقة المسحوبة أو التمرير":"لا تناسب؟ مرّر الدور");
  }catch(e){if(e.message!=="REFILL"){console.error(e);toast("تعذر السحب")}}
+ finally{actionBusy=false;renderActions()}
 }
 async function drawForced(){
- if(gameState.turnUid!==uid||gameState.pendingDraw<=0)return;const n=Number(gameState.pendingDraw);
- $("forcedDrawBtn").disabled=true;
+ if(actionBusy||gameState.turnUid!==uid||gameState.pendingDraw<=0)return;const n=Number(gameState.pendingDraw);
+ actionBusy=true;$("forcedDrawBtn").disabled=true;
  try{
   const cards=[];for(let i=0;i<n;i++)cards.push(await takeCardFromPile());
   for(const c of cards)await set(ref(db,base()+"/hands/"+uid+"/"+c.id),c);
   await update(ref(db,base()+"/players/"+uid),{handCount:(me()?.handCount||myHand.length)+n,unoCalled:false});
   const nxt=nextUid(uid,1,gameState.direction);await update(ref(db,base()+"/state"),{turnUid:nxt,pendingDraw:0,canPass:false,drawnCardId:"",message:(me()?.name||"اللاعب")+" سحب "+n+" أوراق عقوبة"});
- }catch(e){if(e.message!=="REFILL"){console.error(e);toast("تعذر سحب العقوبة")}}finally{$("forcedDrawBtn").disabled=false}
+ }catch(e){if(e.message!=="REFILL"){console.error(e);toast("تعذر سحب العقوبة")}}finally{actionBusy=false;$("forcedDrawBtn").disabled=false;renderActions()}
 }
-async function passTurn(){if(gameState.turnUid!==uid||!gameState.canPass)return;const nxt=nextUid(uid,1,gameState.direction);await update(ref(db,base()+"/state"),{turnUid:nxt,canPass:false,drawnCardId:"",message:(me()?.name||"اللاعب")+" مرّر الدور"})}
+async function passTurn(){if(actionBusy||gameState.turnUid!==uid||!gameState.canPass)return;actionBusy=true;try{const nxt=nextUid(uid,1,gameState.direction);await update(ref(db,base()+"/state"),{turnUid:nxt,canPass:false,drawnCardId:"",message:(me()?.name||"اللاعب")+" مرّر الدور"})}finally{actionBusy=false;renderActions()}}
 async function callUno(){if(myHand.length!==1)return;await update(ref(db,base()+"/players/"+uid),{unoCalled:true});await update(ref(db,base()+"/state"),{message:(me()?.name||"اللاعب")+" قال UNO!"});toast("UNO! 🔥")}
 
 async function hostRefillIfNeeded(){
