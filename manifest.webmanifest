@@ -1,0 +1,13 @@
+{
+  "name":"Color Clash",
+  "short_name":"Color Clash",
+  "description":"لعبة بطاقات جماعية لحظية من 2 إلى 10 لاعبين",
+  "start_url":"./",
+  "scope":"./",
+  "display":"standalone",
+  "background_color":"#0c1019",
+  "theme_color":"#101522",
+  "lang":"ar",
+  "dir":"rtl",
+  "icons":[]
+}
