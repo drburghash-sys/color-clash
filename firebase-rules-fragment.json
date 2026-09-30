@@ -1,0 +1,32 @@
+{
+  "colorClashRooms": {
+    "$room": {
+      "meta": {
+        ".read": "auth != null",
+        ".write": "auth != null && (!data.exists() || data.child('hostUid').val() === auth.uid)"
+      },
+      "players": {
+        ".read": "auth != null",
+        "$uid": {
+          ".write": "auth != null && (auth.uid === $uid || root.child('colorClashRooms').child($room).child('meta').child('hostUid').val() === auth.uid)"
+        }
+      },
+      "state": {
+        ".read": "auth != null",
+        ".write": "auth != null && root.child('colorClashRooms').child($room).child('players').child(auth.uid).exists()"
+      },
+      "hands": {
+        "$uid": {
+          ".read": "auth != null && auth.uid === $uid",
+          ".write": "auth != null && (auth.uid === $uid || root.child('colorClashRooms').child($room).child('meta').child('hostUid').val() === auth.uid)"
+        }
+      },
+      "drawPile": {
+        "$slot": {
+          ".read": "auth != null && root.child('colorClashRooms').child($room).child('state').child('turnUid').val() === auth.uid && root.child('colorClashRooms').child($room).child('state').child('drawIndex').val() === $slot",
+          ".write": "auth != null && root.child('colorClashRooms').child($room).child('meta').child('hostUid').val() === auth.uid"
+        }
+      }
+    }
+  }
+}
