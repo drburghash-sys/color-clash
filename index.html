@@ -78,7 +78,7 @@ import {getDatabase,ref,set,get,update,onValue,remove,runTransaction,onDisconnec
 
 const cfg={apiKey:"AIzaSyBd36jTJ1Z-SrhyXk_jXOcVBjPvVFGfpek",authDomain:"couple-battleship.firebaseapp.com",databaseURL:"https://couple-battleship-default-rtdb.firebaseio.com",projectId:"couple-battleship",storageBucket:"couple-battleship.firebasestorage.app",messagingSenderId:"1030235226722",appId:"1:1030235226722:web:111d78d035944a17a3873b"};
 const app=initializeApp(cfg),auth=getAuth(app),db=getDatabase(app);
-const ROOT="rooms";
+const ROOT="colorClashRooms";
 const $=id=>document.getElementById(id);
 let uid=null,roomCode="",meta=null,players={},gameState=null,myHand=[],unsubs=[],pendingWildCard=null,starting=false,refilling=false,actionBusy=false;
 let netReady=false;
@@ -89,7 +89,7 @@ if(inApp)$("inAppWarning").style.display="block";
 
 function toast(t){const e=$("toast");e.textContent=t;e.classList.add("on");clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove("on"),1800)}
 function show(id){document.querySelectorAll(".screen").forEach(x=>x.classList.remove("on"));$(id).classList.add("on")}
-function roomPath(code=roomCode){return ROOT+"/cc_"+code}
+function roomPath(code=roomCode){return ROOT+"/"+code}
 function base(){return roomPath()}
 function setNet(ok){netReady=ok;$("netPill").textContent=ok?"Firebase متصل":"غير متصل";$("netPill").style.color=ok?"#80efaa":"#ffb4b4"}
 async function ensureAuth(){if(uid)return uid;const cred=await signInAnonymously(auth);uid=cred.user.uid;setNet(true);return uid}
@@ -121,7 +121,6 @@ async function createRoom(){
   if(!code)throw new Error("تعذر إنشاء رمز");
   roomCode=code;saveRoom();
   const t=Date.now();
-  await set(ref(db,base()+"/game"),"color-clash");
   await set(ref(db,base()+"/meta"),{hostUid:uid,status:"lobby",createdAt:t,maxPlayers:10});
   await set(ref(db,base()+"/players/"+uid),{name,seat:0,handCount:0,unoCalled:false,online:true,joinedAt:t});
   attachRoom();show("lobbyScreen");toast("تم إنشاء الغرفة");
