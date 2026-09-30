@@ -252,7 +252,7 @@ function attachRoom(){
  const pRef=ref(db,base()+"/players/"+uid+"/online");set(pRef,true).catch(()=>{});onDisconnect(pRef).set(false).catch(()=>{});
  unsubs.push(onValue(ref(db,base()+"/meta"),s=>{if(!s.exists()){toast("أغلقت الغرفة");clearRoom();show("homeScreen");return}meta=s.val();route();renderAll()}));
  unsubs.push(onValue(ref(db,base()+"/players"),s=>{const prev=players||{};players=s.val()||{};renderAll();hostReconcilePlayers(prev)}));
- unsubs.push(onValue(ref(db,base()+"/state"),s=>{gameState=s.val()||null;renderAll();hostRefillIfNeeded()}));
+ unsubs.push(onValue(ref(db,base()+"/state"),s=>{gameState=s.val()||null;renderAll();hostRefillIfNeeded();hostReconcilePlayers(players||{})}));
  unsubs.push(onValue(ref(db,base()+"/hands/"+uid),s=>{myHand=s.exists()?Object.values(s.val()):[];renderHand();renderActions()}));
 }
 function route(){if(!meta)return;if(meta.status==="ended"){toast("تم إنهاء الغرفة");clearRoom();show("homeScreen");return}if(meta.status==="lobby")show("lobbyScreen");else show("gameScreen")}
