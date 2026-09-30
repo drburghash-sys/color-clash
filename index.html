@@ -247,13 +247,17 @@ async function resumeLast(){
 }
 async function leaveLobby(){
  if(!roomCode)return show("homeScreen");try{
-  if(meta?.status==="lobby"){if(meta.hostUid===uid){const a=seatPlayers().filter(p=>p.uid!==uid);if(a.length)await update(ref(db,base()+"/meta"),{hostUid:a[0].uid});else await remove(ref(db,base()))}await remove(ref(db,base()+"/players/"+uid))}
- }catch(e){}
+  if(meta?.status==="lobby"){
+   if(meta.hostUid===uid){const a=seatPlayers().filter(p=>p.uid!==uid);if(a.length)await update(ref(db,base()+"/meta"),{hostUid:a[0].uid});}
+   await remove(ref(db,base()+"/players/"+uid));
+   if(meta.hostUid===uid&&seatPlayers().filter(p=>p.uid!==uid).length===0)await remove(ref(db,base()+"/meta"));
+  }
+ }catch(e){console.error(e)}
  clearRoom();show("homeScreen")
 }
 async function shareCode(){const t="ادخل لعبة Color Clash برمز الغرفة: "+roomCode+"\nhttps://drburghash-sys.github.io/color-clash/";try{if(navigator.share)await navigator.share({title:"Color Clash",text:t});else{await navigator.clipboard.writeText(t);toast("تم النسخ")}}catch(e){}}
 async function copyCode(){try{await navigator.clipboard.writeText(roomCode);toast("تم نسخ الرمز")}catch(e){toast(roomCode)}}
-function goHomeKeepSeat(){$("winnerOverlay").classList.remove("on");unsubs.forEach(f=>{try{f()}catch(e){}});unsubs=[];show("homeScreen");toast("مقعدك محفوظ ويمكنك العودة")}
+async function goHomeKeepSeat(){$("winnerOverlay").classList.remove("on");try{if(roomCode&&uid)await update(ref(db,base()+"/players/"+uid),{online:false})}catch(e){}unsubs.forEach(f=>{try{f()}catch(e){}});unsubs=[];show("homeScreen");toast("مقعدك محفوظ ويمكنك العودة")}
 function rematch(){if(meta?.hostUid!==uid)return;$("winnerOverlay").classList.remove("on");startGame()}
 
 $("createBtn").addEventListener("click",createRoom);$("joinBtn").addEventListener("click",joinRoom);$("codeInput").addEventListener("input",e=>e.target.value=e.target.value.replace(/\D/g,"").slice(0,6));$("shareBtn").addEventListener("click",shareCode);$("copyCodeBtn").addEventListener("click",copyCode);$("startBtn").addEventListener("click",startGame);$("drawPileBtn").addEventListener("click",drawNormal);$("forcedDrawBtn").addEventListener("click",drawForced);$("passBtn").addEventListener("click",passTurn);$("unoBtn").addEventListener("click",callUno);$("lobbyExit").addEventListener("click",leaveLobby);$("gameRoomPill").addEventListener("click",()=>toast("رمز الغرفة: "+roomCode));$("winnerHomeBtn").addEventListener("click",goHomeKeepSeat);$("rematchBtn").addEventListener("click",rematch);
