@@ -89,8 +89,10 @@ if(inApp)$("inAppWarning").style.display="block";
 
 function toast(t){const e=$("toast");e.textContent=t;e.classList.add("on");clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove("on"),1800)}
 function show(id){document.querySelectorAll(".screen").forEach(x=>x.classList.remove("on"));$(id).classList.add("on")}
-function roomPath(code=roomCode){return ROOT+"/cc_"+code}\nfunction base(){return roomPath()}
+function roomPath(code=roomCode){return ROOT+"/cc_"+code}
+function base(){return roomPath()}
 function setNet(ok){netReady=ok;$("netPill").textContent=ok?"Firebase متصل":"غير متصل";$("netPill").style.color=ok?"#80efaa":"#ffb4b4"}
+async function ensureAuth(){if(uid)return uid;const cred=await signInAnonymously(auth);uid=cred.user.uid;setNet(true);return uid}
 function code6(){return String(Math.floor(100000+Math.random()*900000))}
 function safeName(){const n=$("nameInput").value.trim().slice(0,18);if(!n)throw new Error("اكتب اسمك أولًا");localStorage.setItem("cc_name",n);return n}
 function seatPlayers(){return Object.entries(players||{}).map(([id,p])=>({uid:id,...p})).sort((a,b)=>(a.seat||0)-(b.seat||0))}
@@ -114,11 +116,12 @@ function nextUid(fromUid,steps=1,direction=gameState?.direction||1){const a=seat
 
 async function createRoom(){
  try{
-  const name=safeName();if(!uid)return toast("انتظر الاتصال");
+  const name=safeName();await ensureAuth();
   let code="";for(let i=0;i<8;i++){const c=code6();const s=await get(ref(db,roomPath(c)+"/meta"));if(!s.exists()){code=c;break}}
   if(!code)throw new Error("تعذر إنشاء رمز");
   roomCode=code;saveRoom();
   const t=Date.now();
+  await set(ref(db,base()+"/game"),"color-clash");
   await set(ref(db,base()+"/meta"),{hostUid:uid,status:"lobby",createdAt:t,maxPlayers:10});
   await set(ref(db,base()+"/players/"+uid),{name,seat:0,handCount:0,unoCalled:false,online:true,joinedAt:t});
   attachRoom();show("lobbyScreen");toast("تم إنشاء الغرفة");
@@ -129,7 +132,7 @@ async function joinRoom(){
  if(btn.disabled)return;
  btn.disabled=true;btn.textContent="جارٍ الدخول…";status.textContent="جاري الاتصال بالغرفة…";status.style.color="#9facbd";
  try{
-  if(!uid)throw new Error("Firebase لم يجهز بعد، انتظر لحظة ثم أعد المحاولة");
+  await ensureAuth();
   const name=safeName(),code=$("codeInput").value.replace(/\D/g,"").slice(0,6);
   if(code.length!==6)throw new Error("أدخل رمزًا من 6 أرقام");
   roomCode=code;
