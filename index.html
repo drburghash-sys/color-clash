@@ -18,7 +18,7 @@ button{cursor:pointer}.app{max-width:760px;margin:auto;min-height:100vh;padding:
 <body>
 <div class="app">
 <section class="screen on" id="homeScreen">
-  <div class="top"><div class="logo">CC</div><div class="brand">Color Clash</div><div class="pill" id="netPill">يتصل…</div></div>
+  <div class="top"><div class="logo">CC</div><div class="brand">Color Clash</div><div class="pill" id="netPill">يتصل… · v7</div></div>
   <div class="cardbox hero"><h1>🎴 Color Clash</h1><p>لعبة بطاقات جماعية لحظية من 2 إلى 10 لاعبين. كل لاعب يرى أوراقه فقط، والطاولة تتحدث للجميع فورًا.</p></div>
   <div class="cardbox" id="inAppWarning" style="display:none;border-color:#8a6720;background:#2a220f">
     <b style="color:#ffe08a">⚠ افتح اللعبة في Safari أو Chrome</b>
@@ -71,13 +71,28 @@ button{cursor:pointer}.app{max-width:760px;margin:auto;min-height:100vh;padding:
 <div class="overlay" id="winnerOverlay"><div class="modal winner"><div class="cup">🏆</div><h2 id="winnerTitle">الفائز</h2><p class="hint" id="winnerText"></p><button class="btn primary full" id="rematchBtn" style="display:none">جولة جديدة</button><button class="btn full" id="winnerHomeBtn" style="margin-top:8px">العودة للرئيسية</button></div></div>
 <div class="toast" id="toast"></div>
 
-<script type="module">
-import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import {getAuth,signInAnonymously,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import {getDatabase,ref,set,get,update,onValue,remove,runTransaction,onDisconnect} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
-
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<script>
+const APP_VERSION="v7";
 const cfg={apiKey:"AIzaSyBd36jTJ1Z-SrhyXk_jXOcVBjPvVFGfpek",authDomain:"couple-battleship.firebaseapp.com",databaseURL:"https://couple-battleship-default-rtdb.firebaseio.com",projectId:"couple-battleship",storageBucket:"couple-battleship.firebasestorage.app",messagingSenderId:"1030235226722",appId:"1:1030235226722:web:111d78d035944a17a3873b"};
-const app=initializeApp(cfg),auth=getAuth(app),db=getDatabase(app);
+if(!window.firebase){
+  document.getElementById("netPill").textContent="تعذر تحميل Firebase · "+APP_VERSION;
+  document.getElementById("netPill").style.color="#ffb4b4";
+  throw new Error("FIREBASE_SDK_NOT_LOADED");
+}
+const app=firebase.initializeApp(cfg),auth=firebase.auth(),db=firebase.database();
+const ref=(database,path)=>database.ref(path);
+const set=(r,v)=>r.set(v);
+const get=r=>r.get();
+const update=(r,v)=>r.update(v);
+const onValue=(r,cb)=>{r.on("value",cb);return()=>r.off("value",cb)};
+const remove=r=>r.remove();
+const runTransaction=(r,fn)=>r.transaction(fn);
+const onDisconnect=r=>r.onDisconnect();
+const signInAnonymously=a=>a.signInAnonymously();
+const onAuthStateChanged=(a,cb)=>a.onAuthStateChanged(cb);
 const ROOT="colorClashRooms";
 const $=id=>document.getElementById(id);
 let uid=null,roomCode="",meta=null,players={},gameState=null,myHand=[],unsubs=[],pendingWildCard=null,starting=false,refilling=false,actionBusy=false;
@@ -91,7 +106,7 @@ function toast(t){const e=$("toast");e.textContent=t;e.classList.add("on");clear
 function show(id){document.querySelectorAll(".screen").forEach(x=>x.classList.remove("on"));$(id).classList.add("on")}
 function roomPath(code=roomCode){return ROOT+"/"+code}
 function base(){return roomPath()}
-function setNet(ok){netReady=ok;$("netPill").textContent=ok?"Firebase متصل":"غير متصل";$("netPill").style.color=ok?"#80efaa":"#ffb4b4"}
+function setNet(ok){netReady=ok;$("netPill").textContent=(ok?"Firebase متصل":"غير متصل")+" · "+APP_VERSION;$("netPill").style.color=ok?"#80efaa":"#ffb4b4"}
 async function ensureAuth(){if(uid)return uid;const cred=await signInAnonymously(auth);uid=cred.user.uid;setNet(true);return uid}
 function code6(){return String(Math.floor(100000+Math.random()*900000))}
 function normalizeDigits(v){return String(v??"").replace(/[٠-٩]/g,d=>String("٠١٢٣٤٥٦٧٨٩".indexOf(d))).replace(/[۰-۹]/g,d=>String("۰۱۲۳۴۵۶۷۸۹".indexOf(d)))}
@@ -368,9 +383,9 @@ $("joinBtn").addEventListener("click",joinRoom);
 $("codeInput").addEventListener("input",e=>{e.target.value=normalizeDigits(e.target.value).replace(/\D/g,"").slice(0,6);$("joinStatus").textContent=""});
 $("codeInput").addEventListener("keydown",e=>{if(e.key==="Enter")joinRoom()});$("shareBtn").addEventListener("click",shareCode);$("copyCodeBtn").addEventListener("click",copyCode);$("startBtn").addEventListener("click",startGame);$("drawPileBtn").addEventListener("click",drawNormal);$("forcedDrawBtn").addEventListener("click",drawForced);$("passBtn").addEventListener("click",passTurn);$("unoBtn").addEventListener("click",callUno);$("lobbyExit").addEventListener("click",leaveLobby);$("gameRoomPill").addEventListener("click",()=>toast("رمز الغرفة: "+roomCode));$("winnerHomeBtn").addEventListener("click",goHomeKeepSeat);$("rematchBtn").addEventListener("click",rematch);
 
-signInAnonymously(auth).catch(e=>{console.error(e);setNet(false);toast("تعذر تسجيل Firebase")});
+signInAnonymously(auth).catch(e=>{console.error(e);setNet(false);$("joinStatus").textContent="تعذر تسجيل Firebase على هذا الجهاز";$("joinStatus").style.color="#ff9fa8";toast("تعذر تسجيل Firebase")});
 onAuthStateChanged(auth,u=>{uid=u?.uid||null;setNet(!!uid);if(uid)resumeLast()});
-if("serviceWorker" in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}));
+if("serviceWorker" in navigator)window.addEventListener("load",async()=>{try{const reg=await navigator.serviceWorker.register("./sw.js");await reg.update()}catch(e){console.warn("SW",e)}});
 </script>
 </body>
 </html>
