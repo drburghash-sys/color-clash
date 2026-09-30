@@ -94,6 +94,7 @@ function base(){return roomPath()}
 function setNet(ok){netReady=ok;$("netPill").textContent=ok?"Firebase متصل":"غير متصل";$("netPill").style.color=ok?"#80efaa":"#ffb4b4"}
 async function ensureAuth(){if(uid)return uid;const cred=await signInAnonymously(auth);uid=cred.user.uid;setNet(true);return uid}
 function code6(){return String(Math.floor(100000+Math.random()*900000))}
+function normalizeDigits(v){return String(v??"").replace(/[٠-٩]/g,d=>String("٠١٢٣٤٥٦٧٨٩".indexOf(d))).replace(/[۰-۹]/g,d=>String("۰۱۲۳۴۵۶۷۸۹".indexOf(d)))}
 function safeName(){const n=$("nameInput").value.trim().slice(0,18);if(!n)throw new Error("اكتب اسمك أولًا");localStorage.setItem("cc_name",n);return n}
 function seatPlayers(){return Object.entries(players||{}).map(([id,p])=>({uid:id,...p})).sort((a,b)=>(a.seat||0)-(b.seat||0))}
 function me(){return players?.[uid]||null}
@@ -129,37 +130,102 @@ async function createRoom(){
 async function joinRoom(){
  const btn=$("joinBtn"),status=$("joinStatus");
  if(btn.disabled)return;
- btn.disabled=true;btn.textContent="جارٍ الدخول…";status.textContent="جاري الاتصال بالغرفة…";status.style.color="#9facbd";
+ let stage="تهيئة Firebase",joinedProvisionally=false;
+ btn.disabled=true;btn.textContent="جارٍ الدخول…";status.textContent="جاري تهيئة الاتصال…";status.style.color="#9facbd";
  try{
   await ensureAuth();
-  const name=safeName(),code=$("codeInput").value.replace(/\D/g,"").slice(0,6);
-  if(code.length!==6)throw new Error("أدخل رمزًا من 6 أرقام");
+
+  stage="قراءة رمز الغرفة";
+  const name=safeName(),code=normalizeDigits($("codeInput").value).replace(/\D/g,"").slice(0,6);
+  $("codeInput").value=code;
+  if(code.length!==6)throw new Error("أدخل رمزًا من 6 أرقام — العربية أو الإنجليزية مقبولة");
   roomCode=code;
-  const ms=await get(ref(db,base()+"/meta"));
-  if(!ms.exists())throw new Error("الغرفة غير موجودة أو لم تُنشر قواعد Firebase بعد");
-  const roomMeta=ms.val();
-  const existing=await get(ref(db,base()+"/players/"+uid));
-  if(!existing.exists()){
-   if(roomMeta.status!=="lobby")throw new Error("بدأت المباراة ولا يمكن دخول لاعب جديد");
-   const ps=await get(ref(db,base()+"/players"));
-   const list=ps.exists()?Object.values(ps.val()):[];
-   if(list.length>=10)throw new Error("الغرفة ممتلئة");
-   const seats=new Set(list.map(x=>Number(x.seat)));
-   let seat=0;while(seats.has(seat))seat++;
-   await set(ref(db,base()+"/players/"+uid),{name,seat,handCount:0,unoCalled:false,online:true,joinedAt:Date.now()});
-  }else{
-   await update(ref(db,base()+"/players/"+uid),{online:true,name});
+
+  // Try the normal read-first path. Some Firebase rule sets only allow room
+  // reads after the caller has a player entry, so permission-denied falls
+  // back to a membership-first join below.
+  stage="قراءة بيانات الغرفة";
+  let ms=null,roomMeta=null,readDenied=false;
+  try{
+   ms=await get(ref(db,base()+"/meta"));
+   if(!ms.exists())throw new Error("الغرفة غير موجودة");
+   roomMeta=ms.val();
+  }catch(e){
+   const denied=e?.code==="PERMISSION_DENIED"||String(e?.message||"").toLowerCase().includes("permission");
+   if(!denied)throw e;
+   readDenied=true;
   }
+
+  if(readDenied){
+   stage="تسجيل اللاعب في الغرفة";
+   await set(ref(db,base()+"/players/"+uid),{name,seat:Date.now(),handCount:0,unoCalled:false,online:true,joinedAt:Date.now()});
+   joinedProvisionally=true;
+
+   stage="التحقق من الغرفة بعد التسجيل";
+   ms=await get(ref(db,base()+"/meta"));
+   if(!ms.exists()){
+    await remove(ref(db,base()+"/players/"+uid)).catch(()=>{});
+    joinedProvisionally=false;
+    throw new Error("الغرفة غير موجودة");
+   }
+   roomMeta=ms.val();
+  }
+
+  if(roomMeta.status!=="lobby"){
+   if(joinedProvisionally)await remove(ref(db,base()+"/players/"+uid)).catch(()=>{});
+   throw new Error("بدأت المباراة ولا يمكن دخول لاعب جديد");
+  }
+
+  stage="قراءة قائمة اللاعبين";
+  let ps=null,list=[];
+  try{
+   ps=await get(ref(db,base()+"/players"));
+   list=ps.exists()?Object.entries(ps.val()).map(([id,p])=>({uid:id,...p})):[];
+  }catch(e){
+   // If broad players read is restricted, own-player joining can still work.
+   list=[];
+  }
+
+  const existing=list.find(p=>p.uid===uid);
+  if(list.length>=10&&!existing){
+   if(joinedProvisionally)await remove(ref(db,base()+"/players/"+uid)).catch(()=>{});
+   throw new Error("الغرفة ممتلئة");
+  }
+
+  stage="حفظ اللاعب";
+  if(!joinedProvisionally){
+   let seat=1;
+   if(list.length){
+    const seats=new Set(list.map(x=>Number(x.seat)).filter(Number.isFinite));
+    seat=0;while(seats.has(seat))seat++;
+   }else{
+    seat=Date.now();
+   }
+   await set(ref(db,base()+"/players/"+uid),{name,seat,handCount:existing?.handCount||0,unoCalled:!!existing?.unoCalled,online:true,joinedAt:existing?.joinedAt||Date.now()});
+  }else{
+   // Replace temporary timestamp seat with a compact free seat when possible.
+   if(list.length){
+    const others=list.filter(p=>p.uid!==uid);
+    const seats=new Set(others.map(x=>Number(x.seat)).filter(Number.isFinite));
+    let seat=0;while(seats.has(seat))seat++;
+    await update(ref(db,base()+"/players/"+uid),{seat,name,online:true});
+   }
+  }
+
+  stage="فتح غرفة الانتظار";
   saveRoom();
-  status.textContent="تم الدخول بنجاح ✓";status.style.color="#80efaa";
-  show("lobbyScreen");
   attachRoom();
+  show("lobbyScreen");
+  status.textContent="تم الدخول بنجاح ✓";status.style.color="#80efaa";
   toast("تم الدخول إلى الغرفة");
  }catch(e){
-  console.error("JOIN_FAILED",e);
-  const msg=(e?.code==="PERMISSION_DENIED"||String(e?.message||"").toLowerCase().includes("permission"))?"رفضت Firebase الانضمام: راجع قواعد colorClashRooms":(e.message||"تعذر الدخول");
+  console.error("JOIN_FAILED",stage,e);
+  const denied=e?.code==="PERMISSION_DENIED"||String(e?.message||"").toLowerCase().includes("permission");
+  const detail=denied?"رفضت Firebase هذه الخطوة":"تعذر إكمال هذه الخطوة";
+  const msg=(e?.message&&!denied)?e.message:(detail+" — "+stage);
   status.textContent=msg;status.style.color="#ff9fa8";
-  clearRoom();toast(msg);
+  roomCode="";
+  toast(msg);
  }finally{
   btn.disabled=false;btn.textContent="دخول";
  }
@@ -299,7 +365,7 @@ function rematch(){if(meta?.hostUid!==uid)return;$("winnerOverlay").classList.re
 
 $("createBtn").addEventListener("click",createRoom);
 $("joinBtn").addEventListener("click",joinRoom);
-$("codeInput").addEventListener("input",e=>{e.target.value=e.target.value.replace(/\D/g,"").slice(0,6);$("joinStatus").textContent=""});
+$("codeInput").addEventListener("input",e=>{e.target.value=normalizeDigits(e.target.value).replace(/\D/g,"").slice(0,6);$("joinStatus").textContent=""});
 $("codeInput").addEventListener("keydown",e=>{if(e.key==="Enter")joinRoom()});$("shareBtn").addEventListener("click",shareCode);$("copyCodeBtn").addEventListener("click",copyCode);$("startBtn").addEventListener("click",startGame);$("drawPileBtn").addEventListener("click",drawNormal);$("forcedDrawBtn").addEventListener("click",drawForced);$("passBtn").addEventListener("click",passTurn);$("unoBtn").addEventListener("click",callUno);$("lobbyExit").addEventListener("click",leaveLobby);$("gameRoomPill").addEventListener("click",()=>toast("رمز الغرفة: "+roomCode));$("winnerHomeBtn").addEventListener("click",goHomeKeepSeat);$("rematchBtn").addEventListener("click",rematch);
 
 signInAnonymously(auth).catch(e=>{console.error(e);setNet(false);toast("تعذر تسجيل Firebase")});
