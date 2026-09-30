@@ -10,7 +10,7 @@
 :root{--bg:#0c1019;--panel:#151c2a;--panel2:#1c2535;--line:#2e3a4d;--txt:#f8fafc;--mut:#9facbd;--gold:#ffd166;--red:#e84545;--blue:#3b82f6;--green:#22a06b;--yellow:#e7ad16}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html,body{margin:0;min-height:100%;background:radial-gradient(circle at 50% -10%,#263657 0,#101522 42%,#090c12 100%);color:var(--txt);font-family:system-ui,-apple-system,"Noto Sans Arabic","Segoe UI",Arial,sans-serif}button,input{font:inherit}
 button{cursor:pointer}.app{max-width:760px;margin:auto;min-height:100vh;padding:14px 13px 96px}.screen{display:none}.screen.on{display:block}.top{display:flex;align-items:center;gap:9px;margin-bottom:12px}.brand{font-size:25px;font-weight:1000;letter-spacing:.4px;flex:1}.logo{width:43px;height:43px;border-radius:14px;background:conic-gradient(var(--red),var(--yellow),var(--green),var(--blue),var(--red));display:grid;place-items:center;font-weight:1000;color:#fff;box-shadow:0 8px 25px #0008}.pill{border:1px solid var(--line);background:#111827;color:var(--txt);border-radius:999px;padding:8px 11px;font-size:12px;font-weight:900}.cardbox{background:linear-gradient(180deg,#1a2333,#121925);border:1px solid var(--line);border-radius:23px;padding:17px;margin:11px 0;box-shadow:0 18px 50px #0005}.hero{text-align:center;padding:24px 16px}.hero h1{font-size:36px;margin:4px 0 8px}.hero p{color:var(--mut);line-height:1.8;margin:0}.field{width:100%;background:#0d1420;border:1px solid var(--line);color:#fff;border-radius:15px;padding:14px 15px;outline:none;font-size:18px}.field:focus{border-color:#5b77aa}.label{font-size:13px;color:var(--mut);font-weight:800;margin:14px 2px 7px}.btn{border:1px solid var(--line);background:#202a3a;color:#fff;border-radius:15px;padding:13px 14px;font-weight:900;min-height:49px}.btn.primary{border:0;background:linear-gradient(135deg,#7057ff,#3b82f6)}.btn.good{border:0;background:linear-gradient(135deg,#11998e,#22a06b)}.btn.warn{background:#4a3310;border-color:#70531b;color:#ffe49a}.btn.danger{background:#391b20;border-color:#6d2c35;color:#ffb3bb}.btn.full{width:100%}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:9px}.sep{height:1px;background:var(--line);margin:16px 0}.hint{color:var(--mut);font-size:13px;line-height:1.8}.roomcode{font-size:36px;font-weight:1000;letter-spacing:8px;text-align:center;direction:ltr;color:var(--gold);margin:8px 0}.players{display:grid;gap:8px}.player{display:flex;align-items:center;gap:10px;border:1px solid var(--line);background:#111827;border-radius:16px;padding:10px 12px}.avatar{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:#26344c;font-weight:1000}.pname{font-weight:900;flex:1}.meta{font-size:12px;color:var(--mut)}.hosttag{font-size:11px;background:#463b15;color:#ffe38b;border:1px solid #6c5a1e;border-radius:999px;padding:4px 7px}
-.statusbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px}.statusbar .pill{background:#131c2b}.turnnotice{text-align:center;font-weight:1000;font-size:18px;padding:10px;color:#fff}.opponents{display:flex;gap:8px;overflow:auto;padding:3px 0 10px;scrollbar-width:none}.opp{flex:0 0 auto;min-width:112px;border:1px solid var(--line);background:#111827;border-radius:15px;padding:9px;text-align:center}.opp.turn{outline:2px solid var(--gold);box-shadow:0 0 20px #ffd16635}.opp .n{font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.opp .count{font-size:24px;font-weight:1000;margin-top:4px}.opp .uno{font-size:11px;color:#ffdf73}
+.statusbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px}.roomactions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0 10px}.roomactions .btn{min-height:42px;padding:9px 11px}.statusbar .pill{background:#131c2b}.turnnotice{text-align:center;font-weight:1000;font-size:18px;padding:10px;color:#fff}.opponents{display:flex;gap:8px;overflow:auto;padding:3px 0 10px;scrollbar-width:none}.opp{flex:0 0 auto;min-width:112px;border:1px solid var(--line);background:#111827;border-radius:15px;padding:9px;text-align:center}.opp.turn{outline:2px solid var(--gold);box-shadow:0 0 20px #ffd16635}.opp .n{font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.opp .count{font-size:24px;font-weight:1000;margin-top:4px}.opp .uno{font-size:11px;color:#ffdf73}
 .table{position:relative;min-height:300px;border:1px solid #31415a;border-radius:28px;background:radial-gradient(circle at center,#1c5b48 0,#124737 48%,#0d3027 100%);display:flex;align-items:center;justify-content:center;gap:22px;overflow:hidden;box-shadow:inset 0 0 70px #0007,0 20px 50px #0005}.table:before{content:"";position:absolute;inset:15px;border:1px dashed #ffffff18;border-radius:22px}.pilebtn{position:relative;z-index:2;border:0;background:transparent;color:#fff;padding:0}.pilelabel{text-align:center;font-size:12px;font-weight:900;margin-top:6px}.gamecard{width:92px;height:138px;border-radius:15px;border:5px solid #fff;box-shadow:0 8px 20px #0007;display:grid;place-items:center;position:relative;overflow:hidden;flex:0 0 auto;user-select:none}.gamecard:before{content:"";position:absolute;width:70%;height:72%;border-radius:50%;background:#ffffffea;transform:rotate(25deg)}.gamecard .v{position:relative;z-index:2;font-weight:1000;font-size:38px;color:#111;text-shadow:0 1px #fff}.gamecard .corner{position:absolute;z-index:3;font-weight:1000;font-size:17px;color:#fff;top:6px;right:7px;text-shadow:0 2px 3px #0008}.gamecard.red{background:var(--red)}.gamecard.blue{background:var(--blue)}.gamecard.green{background:var(--green)}.gamecard.yellow{background:var(--yellow)}.gamecard.wild{background:conic-gradient(#e84545 0 25%,#e7ad16 0 50%,#22a06b 0 75%,#3b82f6 0)}.gamecard.back{background:linear-gradient(135deg,#111827,#263957);border-color:#e8edf5}.gamecard.back:before{background:conic-gradient(#e84545,#e7ad16,#22a06b,#3b82f6,#e84545);width:64%;height:64%}.gamecard.back .v{font-size:17px;color:#fff;transform:rotate(-18deg)}.gamecard.small{width:74px;height:112px;border-width:4px}.gamecard.small .v{font-size:30px}.gamecard.playable{transform:translateY(-8px);box-shadow:0 13px 25px #000b,0 0 0 3px #fff3}.gamecard.disabled{filter:saturate(.35) brightness(.72)}
 .handwrap{position:sticky;bottom:0;z-index:20;margin:14px -13px -96px;padding:12px 13px calc(18px + env(safe-area-inset-bottom));background:linear-gradient(transparent,#0b0f18 14%,#0b0f18 100%)}.handhead{display:flex;align-items:center;gap:8px;margin-bottom:8px}.handtitle{font-weight:1000;flex:1}.hand{display:flex;gap:7px;overflow-x:auto;overflow-y:visible;padding:10px 3px 15px;scrollbar-width:none}.hand .gamecard{cursor:pointer;transition:.15s transform}.hand .gamecard:active{transform:translateY(-12px) scale(.97)}.actions{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}.actions .btn{padding:10px 8px;min-height:44px}.msg{text-align:center;color:#dbe7f5;font-size:13px;min-height:22px;padding:4px 5px}.overlay{position:fixed;inset:0;background:#000b;display:none;align-items:center;justify-content:center;padding:18px;z-index:80}.overlay.on{display:flex}.modal{width:min(520px,100%);background:#151d2b;border:1px solid var(--line);border-radius:24px;padding:19px;box-shadow:0 25px 80px #000b}.modal h2{margin:0 0 8px}.colors{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:15px}.colorbtn{height:86px;border:4px solid #fff;border-radius:18px}.toast{position:fixed;left:50%;bottom:115px;transform:translate(-50%,20px);opacity:0;background:#071019e8;color:#fff;border:1px solid #ffffff26;border-radius:999px;padding:10px 16px;font-weight:800;z-index:100;transition:.2s;pointer-events:none;white-space:nowrap}.toast.on{opacity:1;transform:translate(-50%,0)}.winner{text-align:center}.winner .cup{font-size:70px}.winner h2{font-size:30px;margin:5px}.empty{text-align:center;color:var(--mut);padding:26px}.online{width:8px;height:8px;border-radius:50%;background:#2dd36f;display:inline-block}.offline{background:#667085}@media(max-width:480px){.app{padding-left:10px;padding-right:10px}.hero h1{font-size:31px}.table{min-height:260px;gap:13px}.gamecard{width:82px;height:123px}.gamecard.small{width:66px;height:100px}.actions{grid-template-columns:1fr 1fr}.actions .btn:first-child{grid-column:1/3}.roomcode{font-size:30px}}
 </style>
@@ -18,7 +18,7 @@ button{cursor:pointer}.app{max-width:760px;margin:auto;min-height:100vh;padding:
 <body>
 <div class="app">
 <section class="screen on" id="homeScreen">
-  <div class="top"><div class="logo">CC</div><div class="brand">Color Clash</div><div class="pill" id="netPill">يتصل… · v7</div></div>
+  <div class="top"><div class="logo">CC</div><div class="brand">Color Clash</div><div class="pill" id="netPill">يتصل… · v8</div></div>
   <div class="cardbox hero"><h1>🎴 Color Clash</h1><p>لعبة بطاقات جماعية لحظية من 2 إلى 10 لاعبين. كل لاعب يرى أوراقه فقط، والطاولة تتحدث للجميع فورًا.</p></div>
   <div class="cardbox" id="inAppWarning" style="display:none;border-color:#8a6720;background:#2a220f">
     <b style="color:#ffe08a">⚠ افتح اللعبة في Safari أو Chrome</b>
@@ -48,6 +48,7 @@ button{cursor:pointer}.app{max-width:760px;margin:auto;min-height:100vh;padding:
 <section class="screen" id="gameScreen">
   <div class="top"><div class="logo">CC</div><div class="brand">Color Clash</div><button class="pill" id="gameRoomPill">------</button></div>
   <div class="statusbar"><div class="pill" id="directionPill">↻ الاتجاه</div><div class="pill" id="colorPill">اللون</div><div class="pill" id="pilePill">الرزمة</div></div>
+  <div class="roomactions"><button class="btn warn" id="gameExitBtn">خروج من الغرفة</button><button class="btn danger" id="endRoomBtn" style="display:none">إنهاء الغرفة</button></div>
   <div class="opponents" id="opponents"></div>
   <div class="turnnotice" id="turnNotice"></div>
   <div class="table">
@@ -75,7 +76,7 @@ button{cursor:pointer}.app{max-width:760px;margin:auto;min-height:100vh;padding:
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 <script>
-const APP_VERSION="v7";
+const APP_VERSION="v8";
 const cfg={apiKey:"AIzaSyBd36jTJ1Z-SrhyXk_jXOcVBjPvVFGfpek",authDomain:"couple-battleship.firebaseapp.com",databaseURL:"https://couple-battleship-default-rtdb.firebaseio.com",projectId:"couple-battleship",storageBucket:"couple-battleship.firebasestorage.app",messagingSenderId:"1030235226722",appId:"1:1030235226722:web:111d78d035944a17a3873b"};
 if(!window.firebase){
   document.getElementById("netPill").textContent="تعذر تحميل Firebase · "+APP_VERSION;
@@ -95,7 +96,7 @@ const signInAnonymously=a=>a.signInAnonymously();
 const onAuthStateChanged=(a,cb)=>a.onAuthStateChanged(cb);
 const ROOT="colorClashRooms";
 const $=id=>document.getElementById(id);
-let uid=null,roomCode="",meta=null,players={},gameState=null,myHand=[],unsubs=[],pendingWildCard=null,starting=false,refilling=false,actionBusy=false;
+let uid=null,roomCode="",meta=null,players={},gameState=null,myHand=[],unsubs=[],pendingWildCard=null,starting=false,refilling=false,actionBusy=false,reconciling=false;
 let netReady=false;
 const savedName=localStorage.getItem("cc_name")||"";$("nameInput").value=savedName;
 const ua=navigator.userAgent||"";
@@ -114,7 +115,7 @@ function safeName(){const n=$("nameInput").value.trim().slice(0,18);if(!n)throw 
 function seatPlayers(){return Object.entries(players||{}).map(([id,p])=>({uid:id,...p})).sort((a,b)=>(a.seat||0)-(b.seat||0))}
 function me(){return players?.[uid]||null}
 function saveRoom(){localStorage.setItem("cc_room",roomCode)}
-function clearRoom(){localStorage.removeItem("cc_room");roomCode="";unsubs.forEach(f=>{try{f()}catch(e){}});unsubs=[];meta=null;players={};gameState=null;myHand=[]}
+function clearRoom(){localStorage.removeItem("cc_room");roomCode="";unsubs.forEach(f=>{try{f()}catch(e){}});unsubs=[];meta=null;players={};gameState=null;myHand=[];["winnerOverlay","colorOverlay"].forEach(id=>$(id)?.classList.remove("on"))}
 function cardLabel(c){if(!c)return "?";const m={skip:"⊘",reverse:"↺",draw2:"+2",wild:"★",wild4:"+4"};return m[c.value]||String(c.value)}
 function cardClass(c){return c?.color==="wild"?"wild":c?.color||"red"}
 function cardHTML(c,small=false,extra=""){return '<div class="gamecard '+cardClass(c)+(small?' small':'')+' '+extra+'" data-card="'+c.id+'"><span class="corner">'+cardLabel(c)+'</span><span class="v">'+cardLabel(c)+'</span></div>'}
@@ -250,11 +251,11 @@ function attachRoom(){
  if(!roomCode||!uid)return;
  const pRef=ref(db,base()+"/players/"+uid+"/online");set(pRef,true).catch(()=>{});onDisconnect(pRef).set(false).catch(()=>{});
  unsubs.push(onValue(ref(db,base()+"/meta"),s=>{if(!s.exists()){toast("أغلقت الغرفة");clearRoom();show("homeScreen");return}meta=s.val();route();renderAll()}));
- unsubs.push(onValue(ref(db,base()+"/players"),s=>{players=s.val()||{};renderAll()}));
+ unsubs.push(onValue(ref(db,base()+"/players"),s=>{const prev=players||{};players=s.val()||{};renderAll();hostReconcilePlayers(prev)}));
  unsubs.push(onValue(ref(db,base()+"/state"),s=>{gameState=s.val()||null;renderAll();hostRefillIfNeeded()}));
  unsubs.push(onValue(ref(db,base()+"/hands/"+uid),s=>{myHand=s.exists()?Object.values(s.val()):[];renderHand();renderActions()}));
 }
-function route(){if(!meta)return;if(meta.status==="lobby")show("lobbyScreen");else show("gameScreen")}
+function route(){if(!meta)return;if(meta.status==="ended"){toast("تم إنهاء الغرفة");clearRoom();show("homeScreen");return}if(meta.status==="lobby")show("lobbyScreen");else show("gameScreen")}
 function renderAll(){if(!meta)return;$("roomCodeText").textContent=roomCode;$("gameRoomPill").textContent="غرفة "+roomCode;renderLobby();renderGame()}
 function renderLobby(){
  if(!players)return;const a=seatPlayers();$("playerCount").textContent=a.length+" / 10";const box=$("playersList");box.innerHTML="";
@@ -284,6 +285,7 @@ async function startGame(){
 }
 function renderGame(){
  if(!meta||meta.status!=="playing"||!gameState)return;
+ $("endRoomBtn").style.display=meta.hostUid===uid?"block":"none";
  const a=seatPlayers(),box=$("opponents");box.innerHTML="";
  a.filter(p=>p.uid!==uid).forEach(p=>{const d=document.createElement("div");d.className="opp"+(gameState.turnUid===p.uid?" turn":"");d.innerHTML='<div class="n">'+escapeHtml(p.name)+'</div><div class="count">🎴 '+(p.handCount??0)+'</div><div class="meta">'+(p.online?"متصل":"غير متصل")+'</div>'+(p.handCount===1?'<div class="uno">'+(p.unoCalled?"UNO ✓":"ورقة واحدة")+'</div>':'');box.appendChild(d)});
  const turn=players?.[gameState.turnUid];$("turnNotice").textContent=gameState.winnerUid?"انتهت الجولة":gameState.turnUid===uid?"🎯 دورك الآن":"دور "+(turn?.name||"اللاعب");
@@ -359,6 +361,93 @@ async function hostRefillIfNeeded(){
  if(!gameState?.needRefill||meta?.hostUid!==uid||refilling)return;refilling=true;
  try{const deck=shuffle(makeDeck(seatPlayers().length>6?2:1)),pile={};deck.forEach((c,i)=>pile[String(i)]=c);await set(ref(db,base()+"/drawPile"),pile);await update(ref(db,base()+"/state"),{drawIndex:"0",pileCount:deck.length,needRefill:false,message:"تم تجهيز رزمة جديدة"});toast("تمت إعادة تجهيز الرزمة")}catch(e){console.error(e)}finally{refilling=false}
 }
+async function hostReconcilePlayers(prevPlayers={}){
+ if(reconciling||!roomCode||!uid||meta?.status!=="playing"||meta?.hostUid!==uid||!gameState)return;
+ reconciling=true;
+ try{
+  const a=seatPlayers();
+  if(Number(meta?.playerCount)!==a.length)await update(ref(db,base()+"/meta"),{playerCount:a.length});
+
+  if(a.length===0){
+   await update(ref(db,base()+"/meta"),{status:"ended",endedAt:Date.now(),endReason:"no_players"});
+   return;
+  }
+
+  if(a.length===1&&!gameState.winnerUid){
+   await update(ref(db,base()+"/state"),{
+    turnUid:a[0].uid,
+    pendingDraw:0,
+    canPass:false,
+    drawnCardId:"",
+    winnerUid:a[0].uid,
+    message:(a[0].name||"اللاعب")+" فاز بعد خروج بقية اللاعبين"
+   });
+   return;
+  }
+
+  if(a.length>1&&gameState.turnUid&&!players?.[gameState.turnUid]){
+   const oldList=Object.entries(prevPlayers||{}).map(([id,p])=>({uid:id,...p})).sort((x,y)=>(x.seat||0)-(y.seat||0));
+   let next=a[0]?.uid||"";
+   const oldIndex=oldList.findIndex(p=>p.uid===gameState.turnUid);
+   if(oldIndex>=0){
+    const dir=gameState.direction||1;
+    for(let step=1;step<=oldList.length;step++){
+     let j=(oldIndex+dir*step)%oldList.length;if(j<0)j+=oldList.length;
+     const candidate=oldList[j]?.uid;
+     if(candidate&&players?.[candidate]){next=candidate;break}
+    }
+   }
+   if(next){
+    await update(ref(db,base()+"/state"),{
+     turnUid:next,
+     pendingDraw:0,
+     canPass:false,
+     drawnCardId:"",
+     message:"خرج اللاعب صاحب الدور، وتم نقل الدور تلقائيًا"
+    });
+   }
+  }
+ }catch(e){console.error("RECONCILE_PLAYERS",e)}
+ finally{reconciling=false}
+}
+
+async function leaveGame(){
+ if(!roomCode||!uid){clearRoom();show("homeScreen");return}
+ if(!confirm("هل تريد الخروج من الغرفة؟ سيتم حذفك من المباراة الحالية."))return;
+ const oldRoom=roomCode;
+ try{
+  const all=seatPlayers();
+  const remaining=all.filter(p=>p.uid!==uid);
+  if(meta?.hostUid===uid){
+   if(remaining.length){
+    await update(ref(db,base()+"/meta"),{hostUid:remaining[0].uid,playerCount:remaining.length});
+   }else{
+    await update(ref(db,base()+"/meta"),{status:"ended",endedAt:Date.now(),endReason:"host_left"});
+   }
+  }
+  await remove(ref(db,base()+"/hands/"+uid)).catch(()=>{});
+  await remove(ref(db,base()+"/players/"+uid));
+  clearRoom();
+  show("homeScreen");
+  toast("خرجت من الغرفة "+oldRoom);
+ }catch(e){
+  console.error("LEAVE_GAME",e);
+  toast("تعذر الخروج من الغرفة");
+ }
+}
+
+async function endRoom(){
+ if(!roomCode||meta?.hostUid!==uid)return toast("إنهاء الغرفة متاح للمضيف فقط");
+ if(!confirm("إنهاء الغرفة للجميع؟ سيخرج جميع اللاعبين من المباراة."))return;
+ try{
+  await update(ref(db,base()+"/meta"),{status:"ended",endedAt:Date.now(),endedBy:uid});
+  toast("تم إنهاء الغرفة");
+ }catch(e){
+  console.error("END_ROOM",e);
+  toast("تعذر إنهاء الغرفة");
+ }
+}
+
 async function resumeLast(){
  const c=localStorage.getItem("cc_room");if(!c||!uid)return;roomCode=c;
  try{const [m,p]=await Promise.all([get(ref(db,base()+"/meta")),get(ref(db,base()+"/players/"+uid))]);if(m.exists()&&p.exists()){attachRoom();toast("تمت استعادة الغرفة")}else clearRoom()}catch(e){clearRoom()}
@@ -380,6 +469,8 @@ function rematch(){if(meta?.hostUid!==uid)return;$("winnerOverlay").classList.re
 
 $("createBtn").addEventListener("click",createRoom);
 $("joinBtn").addEventListener("click",joinRoom);
+$("gameExitBtn").addEventListener("click",leaveGame);
+$("endRoomBtn").addEventListener("click",endRoom);
 $("codeInput").addEventListener("input",e=>{e.target.value=normalizeDigits(e.target.value).replace(/\D/g,"").slice(0,6);$("joinStatus").textContent=""});
 $("codeInput").addEventListener("keydown",e=>{if(e.key==="Enter")joinRoom()});$("shareBtn").addEventListener("click",shareCode);$("copyCodeBtn").addEventListener("click",copyCode);$("startBtn").addEventListener("click",startGame);$("drawPileBtn").addEventListener("click",drawNormal);$("forcedDrawBtn").addEventListener("click",drawForced);$("passBtn").addEventListener("click",passTurn);$("unoBtn").addEventListener("click",callUno);$("lobbyExit").addEventListener("click",leaveLobby);$("gameRoomPill").addEventListener("click",()=>toast("رمز الغرفة: "+roomCode));$("winnerHomeBtn").addEventListener("click",goHomeKeepSeat);$("rematchBtn").addEventListener("click",rematch);
 
