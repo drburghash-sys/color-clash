@@ -20,6 +20,10 @@ button{cursor:pointer}.app{max-width:760px;margin:auto;min-height:100vh;padding:
 <section class="screen on" id="homeScreen">
   <div class="top"><div class="logo">CC</div><div class="brand">Color Clash</div><div class="pill" id="netPill">يتصل…</div></div>
   <div class="cardbox hero"><h1>🎴 Color Clash</h1><p>لعبة بطاقات جماعية لحظية من 2 إلى 10 لاعبين. كل لاعب يرى أوراقه فقط، والطاولة تتحدث للجميع فورًا.</p></div>
+  <div class="cardbox" id="inAppWarning" style="display:none;border-color:#8a6720;background:#2a220f">
+    <b style="color:#ffe08a">⚠ افتح اللعبة في Safari أو Chrome</b>
+    <div class="hint" style="margin-top:6px;color:#f0dba8">يبدو أنك فتحت الرابط داخل متصفح واتساب أو تطبيق آخر. قد يمنع ذلك Firebase أو حفظ الجلسة بشكل صحيح. استخدم «فتح في Safari/Chrome» ثم أكمل اللعب.</div>
+  </div>
   <div class="cardbox">
     <div class="label">اسمك في اللعبة</div><input class="field" id="nameInput" maxlength="18" placeholder="اكتب اسمك">
     <div class="sep"></div>
@@ -79,6 +83,9 @@ const $=id=>document.getElementById(id);
 let uid=null,roomCode="",meta=null,players={},gameState=null,myHand=[],unsubs=[],pendingWildCard=null,starting=false,refilling=false,actionBusy=false;
 let netReady=false;
 const savedName=localStorage.getItem("cc_name")||"";$("nameInput").value=savedName;
+const ua=navigator.userAgent||"";
+const inApp=/FBAN|FBAV|Instagram|Line\/|MicroMessenger|WhatsApp/i.test(ua);
+if(inApp)$("inAppWarning").style.display="block";
 
 function toast(t){const e=$("toast");e.textContent=t;e.classList.add("on");clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove("on"),1800)}
 function show(id){document.querySelectorAll(".screen").forEach(x=>x.classList.remove("on"));$(id).classList.add("on")}
