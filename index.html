@@ -25,8 +25,9 @@ button{cursor:pointer}.app{max-width:760px;margin:auto;min-height:100vh;padding:
     <div class="sep"></div>
     <button class="btn primary full" id="createBtn">＋ إنشاء غرفة جديدة</button>
     <div class="label">أو انضم برمز الغرفة</div>
-    <div class="grid2"><input class="field" id="codeInput" inputmode="numeric" maxlength="6" placeholder="000000" style="direction:ltr;text-align:center;letter-spacing:4px"><button class="btn good" id="joinBtn">دخول</button></div>
-    <div class="hint" style="margin-top:12px">الربط يبقى محفوظًا على هذا الجهاز أثناء المباراة. إذا أغلقت الصفحة وعدت، يرجع التطبيق لنفس اللاعب والغرفة.</div>
+    <div class="grid2"><input class="field" id="codeInput" inputmode="numeric" maxlength="6" placeholder="000000" style="direction:ltr;text-align:center;letter-spacing:4px"><button class="btn good" id="joinBtn" type="button">دخول</button></div>
+    <div id="joinStatus" class="hint" style="margin-top:10px;min-height:22px"></div>
+    <div class="hint" style="margin-top:4px">الربط يبقى محفوظًا على هذا الجهاز أثناء المباراة. إذا أغلقت الصفحة وعدت، يرجع التطبيق لنفس اللاعب والغرفة.</div>
   </div>
 </section>
 
@@ -117,19 +118,42 @@ async function createRoom(){
  }catch(e){console.error(e);toast(e.message||"تعذر إنشاء الغرفة")}
 }
 async function joinRoom(){
+ const btn=$("joinBtn"),status=$("joinStatus");
+ if(btn.disabled)return;
+ btn.disabled=true;btn.textContent="جارٍ الدخول…";status.textContent="جاري الاتصال بالغرفة…";status.style.color="#9facbd";
  try{
-  const name=safeName(),code=$("codeInput").value.replace(/\D/g,"").slice(0,6);if(code.length!==6)throw new Error("أدخل رمزًا من 6 أرقام");
+  if(!uid)throw new Error("Firebase لم يجهز بعد، انتظر لحظة ثم أعد المحاولة");
+  const name=safeName(),code=$("codeInput").value.replace(/\D/g,"").slice(0,6);
+  if(code.length!==6)throw new Error("أدخل رمزًا من 6 أرقام");
   roomCode=code;
-  const ms=await get(ref(db,base()+"/meta"));if(!ms.exists())throw new Error("الغرفة غير موجودة");
+  const ms=await get(ref(db,base()+"/meta"));
+  if(!ms.exists())throw new Error("الغرفة غير موجودة أو لم تُنشر قواعد Firebase بعد");
+  const roomMeta=ms.val();
   const existing=await get(ref(db,base()+"/players/"+uid));
   if(!existing.exists()){
-   if(ms.val().status!=="lobby")throw new Error("بدأت المباراة ولا يمكن دخول لاعب جديد");
-   const ps=await get(ref(db,base()+"/players"));const list=ps.exists()?Object.values(ps.val()):[];if(list.length>=10)throw new Error("الغرفة ممتلئة");
-   const seats=new Set(list.map(x=>x.seat));let seat=0;while(seats.has(seat))seat++;
+   if(roomMeta.status!=="lobby")throw new Error("بدأت المباراة ولا يمكن دخول لاعب جديد");
+   const ps=await get(ref(db,base()+"/players"));
+   const list=ps.exists()?Object.values(ps.val()):[];
+   if(list.length>=10)throw new Error("الغرفة ممتلئة");
+   const seats=new Set(list.map(x=>Number(x.seat)));
+   let seat=0;while(seats.has(seat))seat++;
    await set(ref(db,base()+"/players/"+uid),{name,seat,handCount:0,unoCalled:false,online:true,joinedAt:Date.now()});
-  }else await update(ref(db,base()+"/players/"+uid),{online:true,name});
-  saveRoom();attachRoom();toast("تم الدخول");
- }catch(e){console.error(e);clearRoom();toast(e.message||"تعذر الدخول")}
+  }else{
+   await update(ref(db,base()+"/players/"+uid),{online:true,name});
+  }
+  saveRoom();
+  status.textContent="تم الدخول بنجاح ✓";status.style.color="#80efaa";
+  show("lobbyScreen");
+  attachRoom();
+  toast("تم الدخول إلى الغرفة");
+ }catch(e){
+  console.error("JOIN_FAILED",e);
+  const msg=(e?.code==="PERMISSION_DENIED"||String(e?.message||"").toLowerCase().includes("permission"))?"رفضت Firebase الانضمام: راجع قواعد colorClashRooms":(e.message||"تعذر الدخول");
+  status.textContent=msg;status.style.color="#ff9fa8";
+  clearRoom();toast(msg);
+ }finally{
+  btn.disabled=false;btn.textContent="دخول";
+ }
 }
 function attachRoom(){
  unsubs.forEach(f=>{try{f()}catch(e){}});unsubs=[];
@@ -264,7 +288,10 @@ async function copyCode(){try{await navigator.clipboard.writeText(roomCode);toas
 async function goHomeKeepSeat(){$("winnerOverlay").classList.remove("on");try{if(roomCode&&uid)await update(ref(db,base()+"/players/"+uid),{online:false})}catch(e){}unsubs.forEach(f=>{try{f()}catch(e){}});unsubs=[];show("homeScreen");toast("مقعدك محفوظ ويمكنك العودة")}
 function rematch(){if(meta?.hostUid!==uid)return;$("winnerOverlay").classList.remove("on");startGame()}
 
-$("createBtn").addEventListener("click",createRoom);$("joinBtn").addEventListener("click",joinRoom);$("codeInput").addEventListener("input",e=>e.target.value=e.target.value.replace(/\D/g,"").slice(0,6));$("shareBtn").addEventListener("click",shareCode);$("copyCodeBtn").addEventListener("click",copyCode);$("startBtn").addEventListener("click",startGame);$("drawPileBtn").addEventListener("click",drawNormal);$("forcedDrawBtn").addEventListener("click",drawForced);$("passBtn").addEventListener("click",passTurn);$("unoBtn").addEventListener("click",callUno);$("lobbyExit").addEventListener("click",leaveLobby);$("gameRoomPill").addEventListener("click",()=>toast("رمز الغرفة: "+roomCode));$("winnerHomeBtn").addEventListener("click",goHomeKeepSeat);$("rematchBtn").addEventListener("click",rematch);
+$("createBtn").addEventListener("click",createRoom);
+$("joinBtn").addEventListener("click",joinRoom);
+$("codeInput").addEventListener("input",e=>{e.target.value=e.target.value.replace(/\D/g,"").slice(0,6);$("joinStatus").textContent=""});
+$("codeInput").addEventListener("keydown",e=>{if(e.key==="Enter")joinRoom()});$("shareBtn").addEventListener("click",shareCode);$("copyCodeBtn").addEventListener("click",copyCode);$("startBtn").addEventListener("click",startGame);$("drawPileBtn").addEventListener("click",drawNormal);$("forcedDrawBtn").addEventListener("click",drawForced);$("passBtn").addEventListener("click",passTurn);$("unoBtn").addEventListener("click",callUno);$("lobbyExit").addEventListener("click",leaveLobby);$("gameRoomPill").addEventListener("click",()=>toast("رمز الغرفة: "+roomCode));$("winnerHomeBtn").addEventListener("click",goHomeKeepSeat);$("rematchBtn").addEventListener("click",rematch);
 
 signInAnonymously(auth).catch(e=>{console.error(e);setNet(false);toast("تعذر تسجيل Firebase")});
 onAuthStateChanged(auth,u=>{uid=u?.uid||null;setNet(!!uid);if(uid)resumeLast()});
