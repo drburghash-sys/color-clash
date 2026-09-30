@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#101522">
+<link rel="manifest" href="./manifest.webmanifest">
+<title>Color Clash</title>
+<style>
+:root{--bg:#0c1019;--panel:#151c2a;--panel2:#1c2535;--line:#2e3a4d;--txt:#f8fafc;--mut:#9facbd;--gold:#ffd166;--red:#e84545;--blue:#3b82f6;--green:#22a06b;--yellow:#e7ad16}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html,body{margin:0;min-height:100%;background:radial-gradient(circle at 50% -10%,#263657 0,#101522 42%,#090c12 100%);color:var(--txt);font-family:system-ui,-apple-system,"Noto Sans Arabic","Segoe UI",Arial,sans-serif}button,input{font:inherit}
+button{cursor:pointer}.app{max-width:760px;margin:auto;min-height:100vh;padding:14px 13px 96px}.screen{display:none}.screen.on{display:block}.top{display:flex;align-items:center;gap:9px;margin-bottom:12px}.brand{font-size:25px;font-weight:1000;letter-spacing:.4px;flex:1}.logo{width:43px;height:43px;border-radius:14px;background:conic-gradient(var(--red),var(--yellow),var(--green),var(--blue),var(--red));display:grid;place-items:center;font-weight:1000;color:#fff;box-shadow:0 8px 25px #0008}.pill{border:1px solid var(--line);background:#111827;color:var(--txt);border-radius:999px;padding:8px 11px;font-size:12px;font-weight:900}.cardbox{background:linear-gradient(180deg,#1a2333,#121925);border:1px solid var(--line);border-radius:23px;padding:17px;margin:11px 0;box-shadow:0 18px 50px #0005}.hero{text-align:center;padding:24px 16px}.hero h1{font-size:36px;margin:4px 0 8px}.hero p{color:var(--mut);line-height:1.8;margin:0}.field{width:100%;background:#0d1420;border:1px solid var(--line);color:#fff;border-radius:15px;padding:14px 15px;outline:none;font-size:18px}.field:focus{border-color:#5b77aa}.label{font-size:13px;color:var(--mut);font-weight:800;margin:14px 2px 7px}.btn{border:1px solid var(--line);background:#202a3a;color:#fff;border-radius:15px;padding:13px 14px;font-weight:900;min-height:49px}.btn.primary{border:0;background:linear-gradient(135deg,#7057ff,#3b82f6)}.btn.good{border:0;background:linear-gradient(135deg,#11998e,#22a06b)}.btn.warn{background:#4a3310;border-color:#70531b;color:#ffe49a}.btn.danger{background:#391b20;border-color:#6d2c35;color:#ffb3bb}.btn.full{width:100%}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:9px}.sep{height:1px;background:var(--line);margin:16px 0}.hint{color:var(--mut);font-size:13px;line-height:1.8}.roomcode{font-size:36px;font-weight:1000;letter-spacing:8px;text-align:center;direction:ltr;color:var(--gold);margin:8px 0}.players{display:grid;gap:8px}.player{display:flex;align-items:center;gap:10px;border:1px solid var(--line);background:#111827;border-radius:16px;padding:10px 12px}.avatar{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:#26344c;font-weight:1000}.pname{font-weight:900;flex:1}.meta{font-size:12px;color:var(--mut)}.hosttag{font-size:11px;background:#463b15;color:#ffe38b;border:1px solid #6c5a1e;border-radius:999px;padding:4px 7px}
+.statusbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px}.statusbar .pill{background:#131c2b}.turnnotice{text-align:center;font-weight:1000;font-size:18px;padding:10px;color:#fff}.opponents{display:flex;gap:8px;overflow:auto;padding:3px 0 10px;scrollbar-width:none}.opp{flex:0 0 auto;min-width:112px;border:1px solid var(--line);background:#111827;border-radius:15px;padding:9px;text-align:center}.opp.turn{outline:2px solid var(--gold);box-shadow:0 0 20px #ffd16635}.opp .n{font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.opp .count{font-size:24px;font-weight:1000;margin-top:4px}.opp .uno{font-size:11px;color:#ffdf73}
+.table{position:relative;min-height:300px;border:1px solid #31415a;border-radius:28px;background:radial-gradient(circle at center,#1c5b48 0,#124737 48%,#0d3027 100%);display:flex;align-items:center;justify-content:center;gap:22px;overflow:hidden;box-shadow:inset 0 0 70px #0007,0 20px 50px #0005}.table:before{content:"";position:absolute;inset:15px;border:1px dashed #ffffff18;border-radius:22px}.pilebtn{position:relative;z-index:2;border:0;background:transparent;color:#fff;padding:0}.pilelabel{text-align:center;font-size:12px;font-weight:900;margin-top:6px}.gamecard{width:92px;height:138px;border-radius:15px;border:5px solid #fff;box-shadow:0 8px 20px #0007;display:grid;place-items:center;position:relative;overflow:hidden;flex:0 0 auto;user-select:none}.gamecard:before{content:"";position:absolute;width:70%;height:72%;border-radius:50%;background:#ffffffea;transform:rotate(25deg)}.gamecard .v{position:relative;z-index:2;font-weight:1000;font-size:38px;color:#111;text-shadow:0 1px #fff}.gamecard .corner{position:absolute;z-index:3;font-weight:1000;font-size:17px;color:#fff;top:6px;right:7px;text-shadow:0 2px 3px #0008}.gamecard.red{background:var(--red)}.gamecard.blue{background:var(--blue)}.gamecard.green{background:var(--green)}.gamecard.yellow{background:var(--yellow)}.gamecard.wild{background:conic-gradient(#e84545 0 25%,#e7ad16 0 50%,#22a06b 0 75%,#3b82f6 0)}.gamecard.back{background:linear-gradient(135deg,#111827,#263957);border-color:#e8edf5}.gamecard.back:before{background:conic-gradient(#e84545,#e7ad16,#22a06b,#3b82f6,#e84545);width:64%;height:64%}.gamecard.back .v{font-size:17px;color:#fff;transform:rotate(-18deg)}.gamecard.small{width:74px;height:112px;border-width:4px}.gamecard.small .v{font-size:30px}.gamecard.playable{transform:translateY(-8px);box-shadow:0 13px 25px #000b,0 0 0 3px #fff3}.gamecard.disabled{filter:saturate(.35) brightness(.72)}
+.handwrap{position:sticky;bottom:0;z-index:20;margin:14px -13px -96px;padding:12px 13px calc(18px + env(safe-area-inset-bottom));background:linear-gradient(transparent,#0b0f18 14%,#0b0f18 100%)}.handhead{display:flex;align-items:center;gap:8px;margin-bottom:8px}.handtitle{font-weight:1000;flex:1}.hand{display:flex;gap:7px;overflow-x:auto;overflow-y:visible;padding:10px 3px 15px;scrollbar-width:none}.hand .gamecard{cursor:pointer;transition:.15s transform}.hand .gamecard:active{transform:translateY(-12px) scale(.97)}.actions{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}.actions .btn{padding:10px 8px;min-height:44px}.msg{text-align:center;color:#dbe7f5;font-size:13px;min-height:22px;padding:4px 5px}.overlay{position:fixed;inset:0;background:#000b;display:none;align-items:center;justify-content:center;padding:18px;z-index:80}.overlay.on{display:flex}.modal{width:min(520px,100%);background:#151d2b;border:1px solid var(--line);border-radius:24px;padding:19px;box-shadow:0 25px 80px #000b}.modal h2{margin:0 0 8px}.colors{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:15px}.colorbtn{height:86px;border:4px solid #fff;border-radius:18px}.toast{position:fixed;left:50%;bottom:115px;transform:translate(-50%,20px);opacity:0;background:#071019e8;color:#fff;border:1px solid #ffffff26;border-radius:999px;padding:10px 16px;font-weight:800;z-index:100;transition:.2s;pointer-events:none;white-space:nowrap}.toast.on{opacity:1;transform:translate(-50%,0)}.winner{text-align:center}.winner .cup{font-size:70px}.winner h2{font-size:30px;margin:5px}.empty{text-align:center;color:var(--mut);padding:26px}.online{width:8px;height:8px;border-radius:50%;background:#2dd36f;display:inline-block}.offline{background:#667085}@media(max-width:480px){.app{padding-left:10px;padding-right:10px}.hero h1{font-size:31px}.table{min-height:260px;gap:13px}.gamecard{width:82px;height:123px}.gamecard.small{width:66px;height:100px}.actions{grid-template-columns:1fr 1fr}.actions .btn:first-child{grid-column:1/3}.roomcode{font-size:30px}}
+</style>
+</head>
+<body>
+<div class="app">
+<section class="screen on" id="homeScreen">
+  <div class="top"><div class="logo">CC</div><div class="brand">Color Clash</div><div class="pill" id="netPill">يتصل…</div></div>
+  <div class="cardbox hero"><h1>🎴 Color Clash</h1><p>لعبة بطاقات جماعية لحظية من 2 إلى 10 لاعبين. كل لاعب يرى أوراقه فقط، والطاولة تتحدث للجميع فورًا.</p></div>
+  <div class="cardbox">
+    <div class="label">اسمك في اللعبة</div><input class="field" id="nameInput" maxlength="18" placeholder="اكتب اسمك">
+    <div class="sep"></div>
+    <button class="btn primary full" id="createBtn">＋ إنشاء غرفة جديدة</button>
+    <div class="label">أو انضم برمز الغرفة</div>
+    <div class="grid2"><input class="field" id="codeInput" inputmode="numeric" maxlength="6" placeholder="000000" style="direction:ltr;text-align:center;letter-spacing:4px"><button class="btn good" id="joinBtn">دخول</button></div>
+    <div class="hint" style="margin-top:12px">الربط يبقى محفوظًا على هذا الجهاز أثناء المباراة. إذا أغلقت الصفحة وعدت، يرجع التطبيق لنفس اللاعب والغرفة.</div>
+  </div>
+</section>
+
+<section class="screen" id="lobbyScreen">
+  <div class="top"><div class="logo">CC</div><div class="brand">غرفة الانتظار</div><button class="pill" id="lobbyExit">خروج</button></div>
+  <div class="cardbox">
+    <div class="hint" style="text-align:center">رمز الغرفة</div><div class="roomcode" id="roomCodeText">------</div>
+    <div class="grid2"><button class="btn" id="shareBtn">مشاركة الرمز</button><button class="btn" id="copyCodeBtn">نسخ الرمز</button></div>
+  </div>
+  <div class="cardbox"><div style="display:flex;align-items:center;gap:8px"><b style="font-size:20px;flex:1">اللاعبون</b><span class="pill" id="playerCount">0 / 10</span></div><div class="players" id="playersList" style="margin-top:12px"></div></div>
+  <div class="cardbox" id="hostBox" style="display:none"><button class="btn primary full" id="startBtn">ابدأ المباراة</button><div class="hint" style="margin-top:9px;text-align:center">يلزم لاعبان على الأقل. يوزع النظام 7 أوراق لكل لاعب.</div></div>
+</section>
+
+<section class="screen" id="gameScreen">
+  <div class="top"><div class="logo">CC</div><div class="brand">Color Clash</div><button class="pill" id="gameRoomPill">------</button></div>
+  <div class="statusbar"><div class="pill" id="directionPill">↻ الاتجاه</div><div class="pill" id="colorPill">اللون</div><div class="pill" id="pilePill">الرزمة</div></div>
+  <div class="opponents" id="opponents"></div>
+  <div class="turnnotice" id="turnNotice"></div>
+  <div class="table">
+    <button class="pilebtn" id="drawPileBtn"><div class="gamecard back"><span class="v">CLASH</span></div><div class="pilelabel">سحب</div></button>
+    <div><div id="topCardHolder"></div><div class="pilelabel">آخر ورقة</div></div>
+  </div>
+  <div class="msg" id="gameMsg"></div>
+  <div class="actions">
+    <button class="btn warn" id="forcedDrawBtn" style="display:none">اسحب العقوبة</button>
+    <button class="btn" id="passBtn" style="display:none">تمرير الدور</button>
+    <button class="btn good" id="unoBtn" style="display:none">UNO!</button>
+  </div>
+  <div class="handwrap">
+    <div class="handhead"><div class="handtitle">أوراقك <span id="myCount"></span></div><div class="pill" id="myTurnPill">انتظر دورك</div></div>
+    <div class="hand" id="hand"></div>
+  </div>
+</section>
+</div>
+
+<div class="overlay" id="colorOverlay"><div class="modal"><h2>اختر اللون</h2><div class="hint">سيصبح هذا هو اللون النشط بعد الورقة الحرة.</div><div class="colors"><button class="colorbtn" data-color="red" style="background:#e84545"></button><button class="colorbtn" data-color="blue" style="background:#3b82f6"></button><button class="colorbtn" data-color="green" style="background:#22a06b"></button><button class="colorbtn" data-color="yellow" style="background:#e7ad16"></button></div></div></div>
+<div class="overlay" id="winnerOverlay"><div class="modal winner"><div class="cup">🏆</div><h2 id="winnerTitle">الفائز</h2><p class="hint" id="winnerText"></p><button class="btn primary full" id="rematchBtn" style="display:none">جولة جديدة</button><button class="btn full" id="winnerHomeBtn" style="margin-top:8px">العودة للرئيسية</button></div></div>
+<div class="toast" id="toast"></div>
+
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {getAuth,signInAnonymously,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import {getDatabase,ref,set,get,update,onValue,remove,runTransaction,onDisconnect} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+const cfg={apiKey:"AIzaSyBd36jTJ1Z-SrhyXk_jXOcVBjPvVFGfpek",authDomain:"couple-battleship.firebaseapp.com",databaseURL:"https://couple-battleship-default-rtdb.firebaseio.com",projectId:"couple-battleship",storageBucket:"couple-battleship.firebasestorage.app",messagingSenderId:"1030235226722",appId:"1:1030235226722:web:111d78d035944a17a3873b"};
+const app=initializeApp(cfg),auth=getAuth(app),db=getDatabase(app);
+const ROOT="colorClashRooms";
+const $=id=>document.getElementById(id);
+let uid=null,roomCode="",meta=null,players={},gameState=null,myHand=[],unsubs=[],pendingWildCard=null,starting=false,refilling=false;
+let netReady=false;
+const savedName=localStorage.getItem("cc_name")||"";$("nameInput").value=savedName;
+
+function toast(t){const e=$("toast");e.textContent=t;e.classList.add("on");clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove("on"),1800)}
+function show(id){document.querySelectorAll(".screen").forEach(x=>x.classList.remove("on"));$(id).classList.add("on")}
+function base(){return ROOT+"/"+roomCode}
+function setNet(ok){netReady=ok;$("netPill").textContent=ok?"Firebase متصل":"غير متصل";$("netPill").style.color=ok?"#80efaa":"#ffb4b4"}
+function code6(){return String(Math.floor(100000+Math.random()*900000))}
+function safeName(){const n=$("nameInput").value.trim().slice(0,18);if(!n)throw new Error("اكتب اسمك أولًا");localStorage.setItem("cc_name",n);return n}
+function seatPlayers(){return Object.entries(players||{}).map(([id,p])=>({uid:id,...p})).sort((a,b)=>(a.seat||0)-(b.seat||0))}
+function me(){return players?.[uid]||null}
+function saveRoom(){localStorage.setItem("cc_room",roomCode)}
+function clearRoom(){localStorage.removeItem("cc_room");roomCode="";unsubs.forEach(f=>{try{f()}catch(e){}});unsubs=[];meta=null;players={};gameState=null;myHand=[]}
+function cardLabel(c){if(!c)return "?";const m={skip:"⊘",reverse:"↺",draw2:"+2",wild:"★",wild4:"+4"};return m[c.value]||String(c.value)}
+function cardClass(c){return c?.color==="wild"?"wild":c?.color||"red"}
+function cardHTML(c,small=false,extra=""){return '<div class="gamecard '+cardClass(c)+(small?' small':'')+' '+extra+'" data-card="'+c.id+'"><span class="corner">'+cardLabel(c)+'</span><span class="v">'+cardLabel(c)+'</span></div>'}
+function colorAr(c){return ({red:"أحمر",blue:"أزرق",green:"أخضر",yellow:"أصفر"})[c]||"حر"}
+function makeDeck(copies=1){
+ const out=[];let n=0;const colors=["red","blue","green","yellow"];
+ function add(color,value,type="normal"){out.push({id:"c"+Date.now().toString(36)+"_"+(n++)+"_"+Math.random().toString(36).slice(2,6),color,value,type})}
+ for(let cp=0;cp<copies;cp++){for(const col of colors){add(col,"0");for(let i=1;i<=9;i++){add(col,String(i));add(col,String(i))}for(let i=0;i<2;i++){add(col,"skip","action");add(col,"reverse","action");add(col,"draw2","action")}}for(let i=0;i<4;i++){add("wild","wild","wild");add("wild","wild4","wild")}}
+ return out;
+}
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function handObj(arr){const o={};arr.forEach(c=>o[c.id]=c);return o}
+function eligible(c){if(!gameState||!c)return false;if(c.color==="wild")return true;return c.color===gameState.activeColor||c.value===gameState.topCard?.value}
+function nextUid(fromUid,steps=1,direction=gameState?.direction||1){const a=seatPlayers();if(!a.length)return fromUid;let i=a.findIndex(x=>x.uid===fromUid);if(i<0)i=0;let j=(i+direction*steps)%a.length;if(j<0)j+=a.length;return a[j].uid}
+
+async function createRoom(){
+ try{
+  const name=safeName();if(!uid)return toast("انتظر الاتصال");
+  let code="";for(let i=0;i<8;i++){const c=code6();const s=await get(ref(db,ROOT+"/"+c+"/meta"));if(!s.exists()){code=c;break}}
+  if(!code)throw new Error("تعذر إنشاء رمز");
+  roomCode=code;saveRoom();
+  const t=Date.now();
+  await set(ref(db,base()+"/meta"),{hostUid:uid,status:"lobby",createdAt:t,maxPlayers:10});
+  await set(ref(db,base()+"/players/"+uid),{name,seat:0,handCount:0,unoCalled:false,online:true,joinedAt:t});
+  attachRoom();show("lobbyScreen");toast("تم إنشاء الغرفة");
+ }catch(e){console.error(e);toast(e.message||"تعذر إنشاء الغرفة")}
+}
+async function joinRoom(){
+ try{
+  const name=safeName(),code=$("codeInput").value.replace(/\D/g,"").slice(0,6);if(code.length!==6)throw new Error("أدخل رمزًا من 6 أرقام");
+  roomCode=code;
+  const ms=await get(ref(db,base()+"/meta"));if(!ms.exists())throw new Error("الغرفة غير موجودة");
+  const existing=await get(ref(db,base()+"/players/"+uid));
+  if(!existing.exists()){
+   if(ms.val().status!=="lobby")throw new Error("بدأت المباراة ولا يمكن دخول لاعب جديد");
+   const ps=await get(ref(db,base()+"/players"));const list=ps.exists()?Object.values(ps.val()):[];if(list.length>=10)throw new Error("الغرفة ممتلئة");
+   const seats=new Set(list.map(x=>x.seat));let seat=0;while(seats.has(seat))seat++;
+   await set(ref(db,base()+"/players/"+uid),{name,seat,handCount:0,unoCalled:false,online:true,joinedAt:Date.now()});
+  }else await update(ref(db,base()+"/players/"+uid),{online:true,name});
+  saveRoom();attachRoom();toast("تم الدخول");
+ }catch(e){console.error(e);clearRoom();toast(e.message||"تعذر الدخول")}
+}
+function attachRoom(){
+ unsubs.forEach(f=>{try{f()}catch(e){}});unsubs=[];
+ if(!roomCode||!uid)return;
+ const pRef=ref(db,base()+"/players/"+uid+"/online");set(pRef,true).catch(()=>{});onDisconnect(pRef).set(false).catch(()=>{});
+ unsubs.push(onValue(ref(db,base()+"/meta"),s=>{if(!s.exists()){toast("أغلقت الغرفة");clearRoom();show("homeScreen");return}meta=s.val();route();renderAll()}));
+ unsubs.push(onValue(ref(db,base()+"/players"),s=>{players=s.val()||{};renderAll()}));
+ unsubs.push(onValue(ref(db,base()+"/state"),s=>{gameState=s.val()||null;renderAll();hostRefillIfNeeded()}));
+ unsubs.push(onValue(ref(db,base()+"/hands/"+uid),s=>{myHand=s.exists()?Object.values(s.val()):[];renderHand();renderActions()}));
+}
+function route(){if(!meta)return;if(meta.status==="lobby")show("lobbyScreen");else show("gameScreen")}
+function renderAll(){if(!meta)return;$("roomCodeText").textContent=roomCode;$("gameRoomPill").textContent="غرفة "+roomCode;renderLobby();renderGame()}
+function renderLobby(){
+ if(!players)return;const a=seatPlayers();$("playerCount").textContent=a.length+" / 10";const box=$("playersList");box.innerHTML="";
+ a.forEach((p,i)=>{const d=document.createElement("div");d.className="player";d.innerHTML='<div class="avatar">'+(i+1)+'</div><div class="pname"><span class="'+(p.online?"online":"online offline")+'"></span> '+escapeHtml(p.name)+(p.uid===uid?' <span class="meta">(أنت)</span>':'')+'</div>'+(p.uid===meta?.hostUid?'<span class="hosttag">المضيف</span>':'');box.appendChild(d)});
+ const host=meta?.hostUid===uid;$("hostBox").style.display=host?"block":"none";$("startBtn").disabled=a.length<2||starting;
+}
+function escapeHtml(s){return String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
+
+async function startGame(){
+ if(starting||uid!==meta?.hostUid)return;const a=seatPlayers();if(a.length<2)return toast("يلزم لاعبان على الأقل");if(a.length>10)return;
+ starting=true;renderLobby();
+ try{
+  let deck=shuffle(makeDeck(a.length>6?2:1));
+  const hands={};for(const p of a)hands[p.uid]=[];
+  for(let r=0;r<7;r++)for(const p of a)hands[p.uid].push(deck.pop());
+  let topIndex=deck.findIndex(c=>c.color!=="wild"&&/^\d+$/.test(c.value));if(topIndex<0)topIndex=0;const top=deck.splice(topIndex,1)[0];
+  const pile={};deck.forEach((c,i)=>pile[String(i)]=c);
+  const handWrites=[];for(const p of a)handWrites.push(set(ref(db,base()+"/hands/"+p.uid),handObj(hands[p.uid])));
+  await Promise.all(handWrites);
+  for(const p of a)await update(ref(db,base()+"/players/"+p.uid),{handCount:7,unoCalled:false});
+  await set(ref(db,base()+"/drawPile"),pile);
+  await set(ref(db,base()+"/state"),{turnUid:a[0].uid,direction:1,topCard:top,activeColor:top.color,pendingDraw:0,drawIndex:"0",pileCount:deck.length,canPass:false,drawnCardId:"",winnerUid:"",needRefill:false,seq:1,message:"بدأت المباراة"});
+  await update(ref(db,base()+"/meta"),{status:"playing",startedAt:Date.now(),playerCount:a.length});
+  toast("بدأت المباراة");
+ }catch(e){console.error(e);toast("تعذر بدء المباراة")}
+ finally{starting=false}
+}
+function renderGame(){
+ if(!meta||meta.status!=="playing"||!gameState)return;
+ const a=seatPlayers(),box=$("opponents");box.innerHTML="";
+ a.filter(p=>p.uid!==uid).forEach(p=>{const d=document.createElement("div");d.className="opp"+(gameState.turnUid===p.uid?" turn":"");d.innerHTML='<div class="n">'+escapeHtml(p.name)+'</div><div class="count">🎴 '+(p.handCount??0)+'</div><div class="meta">'+(p.online?"متصل":"غير متصل")+'</div>'+(p.handCount===1?'<div class="uno">'+(p.unoCalled?"UNO ✓":"ورقة واحدة")+'</div>':'');box.appendChild(d)});
+ const turn=players?.[gameState.turnUid];$("turnNotice").textContent=gameState.winnerUid?"انتهت الجولة":gameState.turnUid===uid?"🎯 دورك الآن":"دور "+(turn?.name||"اللاعب");
+ $("directionPill").textContent=gameState.direction===1?"↻ مع الاتجاه":"↺ عكس الاتجاه";$("colorPill").textContent="اللون: "+colorAr(gameState.activeColor);$("colorPill").style.borderColor=colorCss(gameState.activeColor);$("pilePill").textContent="الرزمة: "+Math.max(0,(gameState.pileCount||0)-Number(gameState.drawIndex||0));
+ $("topCardHolder").innerHTML=cardHTML(gameState.topCard,false,"");$("gameMsg").textContent=gameState.message||"";
+ $("myCount").textContent="("+myHand.length+")";$("myTurnPill").textContent=gameState.turnUid===uid?"دورك":"انتظر";$("myTurnPill").style.color=gameState.turnUid===uid?"#ffe178":"#b8c4d4";
+ renderHand();renderActions();
+ if(gameState.winnerUid){const w=players?.[gameState.winnerUid];$("winnerTitle").textContent=(w?.name||"لاعب")+" فاز!";$("winnerText").textContent="أنهى جميع أوراقه في Color Clash.";$("rematchBtn").style.display=meta.hostUid===uid?"block":"none";$("winnerOverlay").classList.add("on")}
+}
+function colorCss(c){return ({red:"#e84545",blue:"#3b82f6",green:"#22a06b",yellow:"#e7ad16"})[c]||"#fff"}
+function renderHand(){
+ const box=$("hand");if(!box)return;box.innerHTML="";
+ if(!myHand.length){if(!gameState?.winnerUid)box.innerHTML='<div class="empty">لا توجد أوراق للعرض</div>';return}
+ const sorted=[...myHand].sort((a,b)=>String(a.color).localeCompare(String(b.color))||String(a.value).localeCompare(String(b.value)));
+ sorted.forEach(c=>{const play=gameState?.turnUid===uid&&gameState.pendingDraw===0&&eligible(c)&&(!gameState.drawnCardId||gameState.drawnCardId===c.id);const wrap=document.createElement("div");wrap.innerHTML=cardHTML(c,true,play?"playable":"disabled");const el=wrap.firstChild;el.addEventListener("click",()=>{if(play)requestPlay(c);else if(gameState?.turnUid===uid)toast("لا يمكن لعب هذه الورقة الآن")});box.appendChild(el)});
+}
+function renderActions(){
+ if(!gameState)return;const mine=gameState.turnUid===uid&&!gameState.winnerUid;
+ $("forcedDrawBtn").style.display=mine&&gameState.pendingDraw>0?"block":"none";$("forcedDrawBtn").textContent="اسحب "+gameState.pendingDraw+" عقوبة";
+ $("passBtn").style.display=mine&&gameState.pendingDraw===0&&gameState.canPass?"block":"none";
+ const mp=me();$("unoBtn").style.display=myHand.length===1&&mp&&!mp.unoCalled?"block":"none";
+ $("drawPileBtn").disabled=!mine||gameState.pendingDraw>0||gameState.canPass;
+}
+function requestPlay(c){if(c.color==="wild"){pendingWildCard=c;$("colorOverlay").classList.add("on")}else playCard(c,c.color)}
+document.querySelectorAll("[data-color]").forEach(b=>b.addEventListener("click",()=>{if(!pendingWildCard)return;$("colorOverlay").classList.remove("on");const c=pendingWildCard;pendingWildCard=null;playCard(c,b.dataset.color)}));
+
+async function playCard(c,chosenColor){
+ if(gameState.turnUid!==uid||gameState.pendingDraw>0||!eligible(c))return;
+ try{
+  const before=myHand.length,newCount=Math.max(0,before-1);let dir=gameState.direction||1,steps=1,pending=0;
+  if(c.value==="reverse"){dir*=-1;if(seatPlayers().length===2)steps=2}
+  if(c.value==="skip")steps=2;
+  if(c.value==="draw2")pending=2;
+  if(c.value==="wild4")pending=4;
+  const nxt=newCount===0?uid:nextUid(uid,steps,dir);
+  await remove(ref(db,base()+"/hands/"+uid+"/"+c.id));
+  await update(ref(db,base()+"/players/"+uid),{handCount:newCount,unoCalled:newCount===1?false:(me()?.unoCalled||false)});
+  const msg=newCount===0?(me()?.name||"لاعب")+" فاز بالجولة":(c.value==="reverse"?"تم عكس الاتجاه":c.value==="skip"?"تم تجاوز لاعب":pending?"عقوبة سحب "+pending:"تم لعب ورقة");
+  await update(ref(db,base()+"/state"),{turnUid:nxt,direction:dir,topCard:c,activeColor:chosenColor,pendingDraw:pending,canPass:false,drawnCardId:"",winnerUid:newCount===0?uid:"",seq:(gameState.seq||0)+1,message:msg});
+  if(navigator.vibrate)navigator.vibrate(35);
+ }catch(e){console.error(e);toast("تعذر لعب الورقة")}
+}
+async function takeCardFromPile(){
+ const s=await get(ref(db,base()+"/state"));const st=s.val();let idx=String(st.drawIndex||"0");if(Number(idx)>=Number(st.pileCount||0)){await update(ref(db,base()+"/state"),{needRefill:true,message:"نفدت الرزمة، جارٍ إعادة تجهيزها…"});throw new Error("REFILL")}
+ const cs=await get(ref(db,base()+"/drawPile/"+idx));if(!cs.exists())throw new Error("CARD_MISSING");const card=cs.val();
+ const tx=await runTransaction(ref(db,base()+"/state/drawIndex"),cur=>String(cur??"0")===idx?String(Number(idx)+1):undefined);
+ if(!tx.committed)return takeCardFromPile();return card;
+}
+async function drawNormal(){
+ if(gameState.turnUid!==uid||gameState.pendingDraw>0||gameState.canPass)return;
+ try{
+  const card=await takeCardFromPile();await set(ref(db,base()+"/hands/"+uid+"/"+card.id),card);const n=(me()?.handCount||myHand.length)+1;await update(ref(db,base()+"/players/"+uid),{handCount:n,unoCalled:false});await update(ref(db,base()+"/state"),{canPass:true,drawnCardId:card.id,message:(me()?.name||"اللاعب")+" سحب ورقة"});toast(eligible(card)?"يمكنك لعب الورقة المسحوبة أو التمرير":"لا تناسب؟ مرّر الدور");
+ }catch(e){if(e.message!=="REFILL"){console.error(e);toast("تعذر السحب")}}
+}
+async function drawForced(){
+ if(gameState.turnUid!==uid||gameState.pendingDraw<=0)return;const n=Number(gameState.pendingDraw);
+ $("forcedDrawBtn").disabled=true;
+ try{
+  const cards=[];for(let i=0;i<n;i++)cards.push(await takeCardFromPile());
+  for(const c of cards)await set(ref(db,base()+"/hands/"+uid+"/"+c.id),c);
+  await update(ref(db,base()+"/players/"+uid),{handCount:(me()?.handCount||myHand.length)+n,unoCalled:false});
+  const nxt=nextUid(uid,1,gameState.direction);await update(ref(db,base()+"/state"),{turnUid:nxt,pendingDraw:0,canPass:false,drawnCardId:"",message:(me()?.name||"اللاعب")+" سحب "+n+" أوراق عقوبة"});
+ }catch(e){if(e.message!=="REFILL"){console.error(e);toast("تعذر سحب العقوبة")}}finally{$("forcedDrawBtn").disabled=false}
+}
+async function passTurn(){if(gameState.turnUid!==uid||!gameState.canPass)return;const nxt=nextUid(uid,1,gameState.direction);await update(ref(db,base()+"/state"),{turnUid:nxt,canPass:false,drawnCardId:"",message:(me()?.name||"اللاعب")+" مرّر الدور"})}
+async function callUno(){if(myHand.length!==1)return;await update(ref(db,base()+"/players/"+uid),{unoCalled:true});await update(ref(db,base()+"/state"),{message:(me()?.name||"اللاعب")+" قال UNO!"});toast("UNO! 🔥")}
+
+async function hostRefillIfNeeded(){
+ if(!gameState?.needRefill||meta?.hostUid!==uid||refilling)return;refilling=true;
+ try{const deck=shuffle(makeDeck(seatPlayers().length>6?2:1)),pile={};deck.forEach((c,i)=>pile[String(i)]=c);await set(ref(db,base()+"/drawPile"),pile);await update(ref(db,base()+"/state"),{drawIndex:"0",pileCount:deck.length,needRefill:false,message:"تم تجهيز رزمة جديدة"});toast("تمت إعادة تجهيز الرزمة")}catch(e){console.error(e)}finally{refilling=false}
+}
+async function resumeLast(){
+ const c=localStorage.getItem("cc_room");if(!c||!uid)return;roomCode=c;
+ try{const [m,p]=await Promise.all([get(ref(db,base()+"/meta")),get(ref(db,base()+"/players/"+uid))]);if(m.exists()&&p.exists()){attachRoom();toast("تمت استعادة الغرفة")}else clearRoom()}catch(e){clearRoom()}
+}
+async function leaveLobby(){
+ if(!roomCode)return show("homeScreen");try{
+  if(meta?.status==="lobby"){if(meta.hostUid===uid){const a=seatPlayers().filter(p=>p.uid!==uid);if(a.length)await update(ref(db,base()+"/meta"),{hostUid:a[0].uid});else await remove(ref(db,base()))}await remove(ref(db,base()+"/players/"+uid))}
+ }catch(e){}
+ clearRoom();show("homeScreen")
+}
+async function shareCode(){const t="ادخل لعبة Color Clash برمز الغرفة: "+roomCode+"\nhttps://drburghash-sys.github.io/color-clash/";try{if(navigator.share)await navigator.share({title:"Color Clash",text:t});else{await navigator.clipboard.writeText(t);toast("تم النسخ")}}catch(e){}}
+async function copyCode(){try{await navigator.clipboard.writeText(roomCode);toast("تم نسخ الرمز")}catch(e){toast(roomCode)}}
+function goHomeKeepSeat(){$("winnerOverlay").classList.remove("on");unsubs.forEach(f=>{try{f()}catch(e){}});unsubs=[];show("homeScreen");toast("مقعدك محفوظ ويمكنك العودة")}
+function rematch(){if(meta?.hostUid!==uid)return;$("winnerOverlay").classList.remove("on");startGame()}
+
+$("createBtn").addEventListener("click",createRoom);$("joinBtn").addEventListener("click",joinRoom);$("codeInput").addEventListener("input",e=>e.target.value=e.target.value.replace(/\D/g,"").slice(0,6));$("shareBtn").addEventListener("click",shareCode);$("copyCodeBtn").addEventListener("click",copyCode);$("startBtn").addEventListener("click",startGame);$("drawPileBtn").addEventListener("click",drawNormal);$("forcedDrawBtn").addEventListener("click",drawForced);$("passBtn").addEventListener("click",passTurn);$("unoBtn").addEventListener("click",callUno);$("lobbyExit").addEventListener("click",leaveLobby);$("gameRoomPill").addEventListener("click",()=>toast("رمز الغرفة: "+roomCode));$("winnerHomeBtn").addEventListener("click",goHomeKeepSeat);$("rematchBtn").addEventListener("click",rematch);
+
+signInAnonymously(auth).catch(e=>{console.error(e);setNet(false);toast("تعذر تسجيل Firebase")});
+onAuthStateChanged(auth,u=>{uid=u?.uid||null;setNet(!!uid);if(uid)resumeLast()});
+if("serviceWorker" in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}));
+</script>
+</body>
+</html>
